@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Timeline Service</title>
+  <title>Write</title>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
@@ -259,7 +259,7 @@
         data: JSON.stringify(data),
         success: function (response) {
           alert('메시지가 성공적으로 작성되었습니다.');
-          window.location.reload();
+          location.replace("/index.html")
         }
       });
     }
@@ -277,11 +277,8 @@
 </div>
 <div class="wrap">
   <div class="header">
-    <h2>Timeline Service</h2>
-    <p>
-      공유하고 싶은 소식을 입력해주세요.
-      24시간이 지난 뒤에는 사라집니다.
-    </p>
+    <h2>글작성하기</h2>
+
   </div>
   <div class="area-write">
     <textarea class = field" placeholder="제목" name="title" id="title" cols="30" rows="1"></textarea>
