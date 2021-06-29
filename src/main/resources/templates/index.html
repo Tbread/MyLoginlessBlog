@@ -37,20 +37,21 @@
                 success: function (response) {
                     for (let i = 0; i < response.length; i++) {
                         let board = response[i];
+                        let id = board.id;
                         let username = board.username;
                         let title = board.title;
                         let countview = board.countview;
                         let createdAt = board.createdAt;
-                        addHTML(title, countview, username, createdAt)
+                        addHTML(title, countview, username, createdAt,id)
                         //addHTML 함수로 해당인자값들을 넘김
                     }
                 }
             })
         }
 
-        function addHTML(title, countview, username, createdAt) {
+        function addHTML(title, countview, username, createdAt,id) {
             let temp_html = `<tr class="row100 body">
-                            <td class="cell100 column1">${title}</td>
+                            <td class="cell100 column1"><a href="articles.html?id=${id}">${title}</a></td>
                             <td class="cell100 column3">${createdAt}</td>
                             <td class="cell100 column4">${username}</td>
                             <td class="cell100 column5">${countview}</td>
@@ -96,7 +97,6 @@
             <div align="right">
                 <a class="btn btn-primary" href="/write.html" role="button">글작성</a>
             </div>
-
         </div>
     </div>
 

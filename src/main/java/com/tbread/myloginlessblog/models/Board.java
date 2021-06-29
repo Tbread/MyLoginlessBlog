@@ -50,5 +50,11 @@ public class Board extends TimeStamped {
         this.countview = requestDto.getCountview();
     }
 
+    public void updateArticle(String username,String title,String contents){
+        this.username = username;
+        this.contents = contents;
+        this.title = title;
+    }
+
 
 }
