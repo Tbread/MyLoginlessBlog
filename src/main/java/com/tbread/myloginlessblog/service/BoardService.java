@@ -48,4 +48,13 @@ public class BoardService {
         board.updateArticle(requestDto.getUsername(),requestDto.getTitle(),requestDto.getContents());
         return id;
     }
+
+    @Transactional
+    public Long updateView(Long id, BoardRequestDto requestDto) {
+        Board board = boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("존재하지않는글입니다.")
+        );
+        board.updateView(requestDto.getCountview());
+        return id;
+    }
 }

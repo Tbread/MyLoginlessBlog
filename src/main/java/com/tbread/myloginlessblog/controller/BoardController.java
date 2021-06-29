@@ -44,5 +44,10 @@ public class BoardController {
         return boardService.updateArticle(id, requestDto);
     }
 
+    @PutMapping("api/boards/view/{id}")
+    public Long updateView(@PathVariable Long id,@RequestBody BoardRequestDto requestDto){
+        return boardService.updateView(id, requestDto);
+    }
+
 
 }

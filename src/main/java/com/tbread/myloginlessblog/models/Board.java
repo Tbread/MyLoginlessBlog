@@ -56,5 +56,8 @@ public class Board extends TimeStamped {
         this.title = title;
     }
 
+    public void updateView(int countview){
+        this.countview = countview;
+    }
 
 }
