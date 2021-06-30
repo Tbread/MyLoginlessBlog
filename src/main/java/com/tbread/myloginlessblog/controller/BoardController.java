@@ -20,7 +20,7 @@ public class BoardController {
 
     @GetMapping("api/boards")
     public List<Board> readBoardList(BoardListRequestDto requestDto) {
-        return boardRepository.findAllByOrderByModifiedAtDesc();
+        return boardRepository.findAllByOrderByCreatedAtDesc();
     }
 
     @PostMapping("api/boards")
