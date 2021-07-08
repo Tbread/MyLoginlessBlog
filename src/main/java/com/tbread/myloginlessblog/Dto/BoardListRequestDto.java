@@ -1,4 +1,4 @@
-package com.tbread.myloginlessblog.models;
+package com.tbread.myloginlessblog.Dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

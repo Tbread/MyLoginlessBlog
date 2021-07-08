@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>readArticle</title>
+    <link rel="stylesheet" type="text/css" href="../css/test.css">
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<style>
+    #forpadding {
+        padding-top: 100px;
+    }
+    .btn_cmt_modi {
+        background: url(/images/edit.png);
+        font-size: 0;
+        line-height: 0;
+        width: 13px;
+        height: 13px;
+        vertical-align: top
+    }
+    .btn_cmt_modi_submit {
+        background: url(/images/done.png);
+        font-size: 0;
+        line-height: 0;
+        width: 13px;
+        height: 13px;
+        vertical-align: top
+    }
+</style>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        <!--페이지가 로드됐을때 실행-->
+        /*<![CDATA[*/
+        let id = [[${id}]];
+        /*]]>*/
+        getArticle(id);
+        getComment(id);
+    })
+
+    function chk_comment_guest(){
+        /*<![CDATA[*/
+        let username = [[${username}]];
+        /*]]>*/
+        if (username == "not_login_user"){
+            alert("로그인 한 유저만 댓글 등록이 가능합니다.");
+            location.href="/user/login"
+        }
+    }
+
+    function hideEditCont(id){
+        $(`#${id}-textarea`).hide()
+        $(`#${id}-btn-submit`).hide()
+    }
+
+    function showEditCont(id){
+        $(`#${id}-textarea`).show()
+        $(`#${id}-contents`).hide()
+        $(`#${id}-btn-normal`).hide()
+        $(`#${id}-btn-mod`).hide()
+        $(`#${id}-btn-submit`).show()
+
+    }
+
+    function plusView(id, countview) {
+        let data = {'countview': countview + 1};
+        $.ajax({
+            type: 'PUT',
+            url: `/api/boards/view/${id}`,
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (response) {
+            }
+        })
+    }
+
+    function getArticle(id) {
+        $.ajax({
+            type: 'GET',
+            url: `/api/boards/${id}`,
+            success: function (response) {
+                let board = response;
+                let contents = board.contents;
+                let username = board.username;
+                let title = board.title;
+                let countview = board.countview;
+                let createdAt = board.createdAt;
+                plusView(id, countview)
+                addHTML(title, countview, username, createdAt, contents, id)
+            }
+        })
+    }
+
+    function getComment(id){
+        let dataid = parseInt(id)
+        $.ajax({
+            type: 'GET',
+            url: `/api/comment`,
+            data: {"board_id":dataid},
+            success: function (response) {
+                for (let i = 0; i<response.length;i++){
+                    let comment = response[i];
+                    let id = comment.id;
+                    let username = comment.username;
+                    let contents = comment.contents;
+                    let createdAt = comment.createdAt;
+                    addComment(contents,username,id,createdAt);
+                }
+            }
+        })
+    }
+
+    function editComment(id){
+        let contents = $(`#${id}-contents`).text();
+        $(`#${id}-textarea`).val(contents);
+        showEditCont(id)
+    }
+
+    function submitEditComment(id){
+        let contents = $(`#${id}-textarea`).val()
+        if (contents == ""){
+            alert("공란을 입력할수없습니다.")
+            return;
+        }
+        let data = {'contents': contents};
+        $.ajax({
+            type: "PUT",
+            url: "/api/comment/"+id,
+            contentType: "application/json", // JSON 형식으로 전달함을 알리기
+            data: JSON.stringify(data),
+            success: function (response) {
+                alert('댓글을 수정하였습니다');
+                location.reload()
+            }
+        });
+    }
+
+    function addComment(contents,username,id,createdAt){
+        let temp_html = `<li class="ub-content">
+                <div class="cmt_info clear">
+                    <div class="cmt_nickbox"><span class="gall_writer ub-writer"><span class="nickname">${username}</span></span></div>
+                    <div class="clear cmt_txtbox btn_reply_write_all"><p id="${id}-contents" class="usertxt ub-word">${contents}</p>
+                    <textarea id="${id}-textarea" class="usertxt ub-word"></textarea></div>
+                    <div class="fr clear"><span class="date_time">${createdAt}</span>
+                        <div class="cmt_mdf_del" id="${id}-btn-normal">
+                            <button type="button" class="btn_cmt_delete" onclick="delCommentConfirm(${id})">삭제</button>
+                        </div>
+                        <div class="cmt_mdf_del" id="${id}-btn-mod">
+                            <button type="button" class="btn_cmt_modi" onclick="editComment(${id})">수정</button>
+                        </div>
+                        <div class="cmt_mdf_del" id="${id}-btn-submit">
+                            <button type="button" class="btn_cmt_modi_submit" onclick="submitEditComment(${id})">완료</button>
+                        </div>
+                    </div>
+                </div>
+            </li>`
+        let temp_html2 = `<li class="ub-content">
+                <div class="cmt_info clear">
+                    <div class="cmt_nickbox"><span class="gall_writer ub-writer"><span class="nickname">${username}</span></span></div>
+                    <div class="clear cmt_txtbox btn_reply_write_all"><p class="usertxt ub-word">${contents}</p></div>
+                    <div class="fr clear"><span class="date_time">${createdAt}</span>
+                    </div>
+                </div>
+            </li>`
+        /*<![CDATA[*/
+        let nowusername = [[${username}]];
+        /*]]>*/
+        if (nowusername == username){
+            $('.cmt_list').append(temp_html);
+            hideEditCont(id);
+        } else {
+            $('.cmt_list').append(temp_html2);
+        }
+    }
+
+    function addHTML(title, countview, username, createdAt, contents, id) {
+        let temp_html = `<div class="view_content_wrap">
+    <header>
+        <div class="gallview_head clear ub-content">
+
+            <h3 class="title ub-word"><span class="title_subject">${title}</span></h3>
+
+            <div class="gall_writer ub-writer" data-uid="" data-loc="view">
+                <div class="fl">
+                    <span class="nickname"><em>${username}</em></span><span class="gall_date"
+                                                                            >작성일자: ${createdAt}</span>
+                                                                            <span class="gall_count">조회수: ${countview}</span>
+                </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="gallview_contents">
+        <div class="inner clear">
+            <div class="writing_view_box">
+
+                <div class="write_div" style="overflow:hidden;width:900px;">
+                    <div>${contents}</div>
+                    <br></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="forpadding">
+    <div align="left">
+        <button type="button" class="btn btn-primary btn-sm" onclick="editPost('${id}')">글수정</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="delArticleConfirm('${id}')">글삭제</button>
+    </div>
+</div>
+`
+        let temp_html2 = `<div class="view_content_wrap">
+    <header>
+        <div class="gallview_head clear ub-content">
+
+            <h3 class="title ub-word"><span class="title_subject">${title}</span></h3>
+
+            <div class="gall_writer ub-writer" data-uid="" data-loc="view">
+                <div class="fl">
+                    <span class="nickname"><em>${username}</em></span><span class="gall_date"
+                                                                            >작성일자: ${createdAt}</span>
+                                                                            <span class="gall_count">조회수: ${countview}</span>
+                </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="gallview_contents">
+        <div class="inner clear">
+            <div class="writing_view_box">
+
+                <div class="write_div" style="overflow:hidden;width:900px;">
+                    <div>${contents}</div>
+                    <br></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+`
+        /*<![CDATA[*/
+        let nowName = [[${username}]];
+        /*]]>*/
+        if (nowName == username) {
+            $('#addhere').append(temp_html);
+        } else {
+            $('#addhere').append(temp_html2);
+        }
+    }
+
+    function rmComment(id){
+        $.ajax({
+            type: "DELETE",
+            url: `/api/comment/${id}`,
+            success: function (response) {
+                alert('댓글 삭제에 성공하였습니다.');
+                location.reload();
+            }
+        })
+    }
+
+    function delPost(id) {
+        $.ajax({
+            type: "DELETE",
+            url: `/api/boards/${id}`,
+            success: function (response) {
+                alert('게시글 삭제에 성공하였습니다.');
+                location.replace("/")
+            }
+        })
+    }
+
+    function editPost(id) {
+        location.href = `/modify/${id}`
+    }
+
+    function writeComment(){
+        let contents = $('#comment-box').val();
+        /*<![CDATA[*/
+        let id = [[${id}]];
+        let username = [[${username}]];
+        /*]]>*/
+        console.log(username)
+        if (username == "not_login_user"){
+            alert("로그인한 유저만 댓글 등록이 가능합니다")
+            return;
+        }
+        if (contents == ""){
+            alert("공란을 입력할수없습니다")
+            return;
+        }
+
+        let data = {'username':username,'board_id':id,'contents':contents}
+        $.ajax({
+            type: "POST",
+            url: "/api/comment",
+            contentType: "application/json", // JSON 형식으로 전달함을 알리기
+            data: JSON.stringify(data),
+            success: function (response) {
+                location.reload();
+            }
+        });
+    }
+
+    function delArticleConfirm(id){
+        if (confirm("정말로 게시글을 삭제하시겠습니까?") == true){
+            delPost(id);
+        } else {
+            return;
+        }
+    }
+
+    function delCommentConfirm(id){
+        if (confirm("정말로 댓글을 삭제하시겠습니까?") == true){
+            rmComment(id);
+        } else {
+            return;
+        }
+    }
+</script>
+<body>
+<div id="addhere">
+</div>
+<div class="cmt_write_box clear">
+    <div class="cmt_txt_cont">
+        <div>
+            <label class="cmt_textarea_label">
+
+            </label>
+            <textarea onfocus="chk_comment_guest()" maxlength="400" id="comment-box"></textarea>
+        </div>
+
+        <div>
+
+            <div class="fr">
+
+                <button type="button" class="btn_lightblue btn_svc small repley_add_vote" onclick="writeComment()">등록</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="comment_box">
+        <ul class="cmt_list">
+        </ul>
+    </div>
+</div>
+</body>
+</html>

@@ -1,20 +1,19 @@
 package com.tbread.myloginlessblog.models;
 
+import com.tbread.myloginlessblog.Dto.BoardListRequestDto;
+import com.tbread.myloginlessblog.Dto.BoardRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 
 @NoArgsConstructor
 @Getter
 @Entity
 public class Board extends TimeStamped {
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
@@ -29,6 +28,7 @@ public class Board extends TimeStamped {
 
     @Column(nullable = false)
     private int countview;
+
 
     public Board(String username, String title, String contents, int countview) {
         this.username = username;
@@ -50,8 +50,7 @@ public class Board extends TimeStamped {
         this.countview = requestDto.getCountview();
     }
 
-    public void updateArticle(String username,String title,String contents){
-        this.username = username;
+    public void updateArticle(String title,String contents){
         this.contents = contents;
         this.title = title;
     }

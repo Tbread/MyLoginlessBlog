@@ -1,14 +1,13 @@
 package com.tbread.myloginlessblog.service;
 
 import com.tbread.myloginlessblog.models.Board;
-import com.tbread.myloginlessblog.models.BoardListRequestDto;
-import com.tbread.myloginlessblog.models.BoardRepository;
-import com.tbread.myloginlessblog.models.BoardRequestDto;
+import com.tbread.myloginlessblog.Dto.BoardListRequestDto;
+import com.tbread.myloginlessblog.repository.BoardRepository;
+import com.tbread.myloginlessblog.Dto.BoardRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -45,7 +44,7 @@ public class BoardService {
         Board board = boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지않는글입니다.")
         );
-        board.updateArticle(requestDto.getUsername(),requestDto.getTitle(),requestDto.getContents());
+        board.updateArticle(requestDto.getTitle(),requestDto.getContents());
         return id;
     }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
@@ -205,7 +205,7 @@
       margin-top: 12px;
     }
   </style>
-  <script>
+  <script th:inline="javascript">
     // 미리 작성된 영역 - 수정하지 않으셔도 됩니다.
     // 사용자가 내용을 올바르게 입력하였는지 확인합니다.
     function isValidContents(contents) {
@@ -220,18 +220,6 @@
       return true;
     }
 
-    // 익명의 username을 만듭니다.
-    function genRandomName(length) {
-      let result = '';
-      let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let charactersLength = characters.length;
-      for (let i = 0; i < length; i++) {
-        let number = Math.random() * charactersLength;
-        let index = Math.floor(number);
-        result += characters.charAt(index);
-      }
-      return result;
-    }
 
     $(document).ready(function () {
       // HTML 문서를 로드할 때마다 실행합니다.
@@ -241,25 +229,23 @@
     function writePost() {
       // 1. 작성한 메모를 불러옵니다.
       let contents = $('#contents').val();
-      // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
       if (isValidContents(contents) == false) {
         return;
       }
-      // 3. genRandomName 함수를 통해 익명의 username을 만듭니다.
-      let username = $('#username').val();
       let countview = 0;
       let title = $('#title').val();
-      // 4. 전달할 data JSON으로 만듭니다.
-      let data = {'username': username, 'contents': contents,'title':title};
-      // 5. POST /api/memos 에 data를 전달합니다.
-      let id = window.location.href.split("=")[1]
+      /*<![CDATA[*/
+      let username = [[${username}]];
+      /*]]>*/
+      // 타임리프로 받아온 username
+      let data = {'username': username, 'contents': contents,'countview':countview,'title':title};
       $.ajax({
-        type: "PUT",
-        url: "/api/boards/"+id,
+        type: "POST",
+        url: "/api/boards",
         contentType: "application/json", // JSON 형식으로 전달함을 알리기
         data: JSON.stringify(data),
         success: function (response) {
-          alert('게시글이 성공적으로 수정되었습니다.');
+          alert('게시글이 성공적으로 작성되었습니다.');
           location.replace("/")
         }
       });
@@ -278,13 +264,12 @@
 </div>
 <div class="wrap">
   <div class="header">
-    <h2>글수정하기</h2>
+    <h2>글작성하기</h2>
 
   </div>
   <div class="area-write">
-    <textarea class = field" placeholder="제목" name="title" id="title" cols="30" rows="1"></textarea>
-    <textarea class = field" placeholder="아이디" name="username" id="username" cols="10" rows="1"></textarea>
-    <textarea class="field" placeholder="공유하고 싶은 소식을 입력해주세요" name="contents" id="contents" cols="30"
+    <textarea placeholder="제목" name="title" id="title" cols="30" rows="1"></textarea>
+    <textarea class= "field" placeholder="공유하고 싶은 소식을 입력해주세요" name="contents" id="contents" cols="30"
               rows="10"></textarea>
 
     <!--            <button class="btn btn-danger" onclick="writePost()">작성하기</button>-->

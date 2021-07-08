@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>MyLoginlessBlog</title>
     <meta charset="UTF-8">
@@ -51,7 +51,7 @@
 
         function addHTML(title, countview, username, createdAt,id) {
             let temp_html = `<tr class="row100 body">
-                            <td class="cell100 column1"><a href="articles.html?id=${id}">${title}</a></td>
+                            <td class="cell100 column1"><a href="articles/${id}">${title}</td>
                             <td class="cell100 column3">${createdAt}</td>
                             <td class="cell100 column4">${username}</td>
                             <td class="cell100 column5">${countview}</td>
@@ -95,7 +95,7 @@
 
             </div>
             <div align="right">
-                <a class="btn btn-primary" href="/write.html" role="button">글작성</a>
+                <a class="btn btn-primary" onclick="location.href='/write'" role="button">글작성</a>
             </div>
         </div>
     </div>

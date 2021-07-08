@@ -1,5 +1,6 @@
-package com.tbread.myloginlessblog.models;
+package com.tbread.myloginlessblog.repository;
 
+import com.tbread.myloginlessblog.models.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
